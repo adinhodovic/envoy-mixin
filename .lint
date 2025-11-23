@@ -1,0 +1,32 @@
+---
+exclusions:
+  template-job-rule:
+    reason: Jobs are not set to multi in our case.
+  template-instance-rule:
+    reason: We don't use instances.
+  panel-datasource-rule:
+    reason: Using a datasource for each panel.
+  panel-title-description-rule:
+    reason: TODO(adinhodovic)
+  target-instance-rule:
+  target-rate-interval-rule:
+    reason: Intented 1h range.
+    entries:
+      - dashboard: Envoy / Overview
+        panel: Downstream Overview [1h]
+        targetIdx: 6
+      - dashboard: Envoy / Overview
+        panel: Upstream Overview [1h]
+        targetIdx: 0
+      - dashboard: Envoy / Overview
+        panel: Upstream Overview [1h]
+        targetIdx: 1
+      - dashboard: Envoy / Overview
+        panel: Upstream Overview [1h]
+        targetIdx: 2
+      - dashboard: Envoy / Overview
+        panel: Upstream Overview [1h]
+        targetIdx: 3
+      - dashboard: Envoy / Overview
+        panel: Upstream Overview [1h]
+        targetIdx: 4

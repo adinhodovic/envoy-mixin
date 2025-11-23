@@ -6,19 +6,6 @@ local dashboard = g.dashboard;
 local row = g.panel.row;
 local grid = g.util.grid;
 
-local tablePanel = g.panel.table;
-local pieChartPanel = g.panel.pieChart;
-
-// Pie Chart
-local pcStandardOptions = pieChartPanel.standardOptions;
-local pcOverride = pcStandardOptions.override;
-
-// Table
-local tbStandardOptions = tablePanel.standardOptions;
-local tbQueryOptions = tablePanel.queryOptions;
-local tbPanelOptions = tablePanel.panelOptions;
-local tbOverride = tbStandardOptions.override;
-
 {
   local dashboardName = 'envoy-upstream',
   grafanaDashboards+:: {
@@ -278,7 +265,7 @@ local tbOverride = tbStandardOptions.override;
         upstreamActiveCxByEnvoyClusterNamePieChart:
           mixinUtils.dashboards.pieChartPanel(
             'Upstream Active Connections by Envoy Cluster Name',
-            'connections',
+            'short',
             queries.upstreamActiveCx,
             '{{ envoy_cluster_name }}',
             description='The distribution of active upstream connections by Envoy cluster name.',
@@ -481,7 +468,7 @@ local tbOverride = tbStandardOptions.override;
         upstreamCxActiveByPodTimeSeries:
           mixinUtils.dashboards.timeSeriesPanel(
             'Upstream Active Connections by Pod',
-            'connections',
+            'short',
             queries.upstreamCxActiveByPod,
             '{{ pod }}',
             description='The upstream active connections by pod over time.',

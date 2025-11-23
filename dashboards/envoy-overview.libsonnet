@@ -7,10 +7,6 @@ local row = g.panel.row;
 local grid = g.util.grid;
 
 local tablePanel = g.panel.table;
-local pieChartPanel = g.panel.pieChart;
-
-// Pie Chart
-local pcStandardOptions = pieChartPanel.standardOptions;
 
 // Table
 local tbStandardOptions = tablePanel.standardOptions;

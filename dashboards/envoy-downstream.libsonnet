@@ -226,7 +226,7 @@ local grid = g.util.grid;
         downstreamActiveCxByEnvoyHttpConnManagerPrefixPieChart:
           mixinUtils.dashboards.pieChartPanel(
             'Downstream Active Connections by Envoy HTTP Conn Manager Prefix',
-            'connections',
+            'short',
             queries.downstreamActiveCx,
             '{{ envoy_http_conn_manager_prefix }}',
             description='The distribution of active downstream connections by Envoy HTTP connection manager prefix.',
@@ -398,7 +398,7 @@ local grid = g.util.grid;
         downstreamCxActiveByPodTimeSeries:
           mixinUtils.dashboards.timeSeriesPanel(
             'Downstream Active Connections by Pod',
-            'connections',
+            'short',
             queries.downstreamCxActiveByPod,
             '{{ pod }}',
             description='The downstream active connections by pod over time.',
