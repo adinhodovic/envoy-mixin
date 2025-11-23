@@ -94,3 +94,22 @@ tests:
               summary: "Envoy upstream has unhealthy hosts."
               description: "More than 33% of hosts are unhealthy for cluster test-cluster in default for the past 5m."
               dashboard_url: "https://grafana.com/d/envoy-upstream-skj2/envoy-upstream?var-namespace=default&var-envoy_cluster_name=test-cluster"
+  - interval: 1m
+    input_series:
+      - series: 'xds_snapshot_update_total{job="envoy-gateway", namespace="envoy-gateway-system", status="error", nodeID="node-1"}'
+        values: "0+1x10"
+      - series: 'xds_snapshot_update_total{job="envoy-gateway", namespace="envoy-gateway-system", status="success", nodeID="node-1"}'
+        values: "0+100x10"
+    alert_rule_test:
+      - eval_time: 10m
+        alertname: EnvoyXDSUpdateFailed
+        exp_alerts:
+          - exp_labels:
+              namespace: envoy-gateway-system
+              status: error
+              nodeID: node-1
+              severity: warning
+            exp_annotations:
+              summary: "Envoy Gateway XDS snapshot update failed."
+              description: "XDS snapshot update failed for node node-1 in envoy-gateway-system with status error the past 5m."
+              dashboard_url: "https://grafana.com/d/envoy-gateway-overview-skj2/envoy-gateway-overview?var-namespace=envoy-gateway-system"

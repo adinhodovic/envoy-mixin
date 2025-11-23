@@ -17,11 +17,13 @@
       'envoy-overview': 'envoy-overview-skj2',
       'envoy-upstream': 'envoy-upstream-skj2',
       'envoy-downstream': 'envoy-downstream-skj2',
+      'envoy-gateway-overview': 'envoy-gateway-overview-skj2',
     },
     dashboardUrls: {
       'envoy-overview': '%s/d/%s/envoy-overview' % [this.grafanaUrl, this.dashboardIds['envoy-overview']],
       'envoy-upstream': '%s/d/%s/envoy-upstream' % [this.grafanaUrl, this.dashboardIds['envoy-upstream']],
       'envoy-downstream': '%s/d/%s/envoy-downstream' % [this.grafanaUrl, this.dashboardIds['envoy-downstream']],
+      'envoy-gateway-overview': '%s/d/%s/envoy-gateway-overview' % [this.grafanaUrl, this.dashboardIds['envoy-gateway-overview']],
     },
 
     tags: ['envoy', 'envoy-mixin', 'gateway'],
@@ -66,6 +68,18 @@
         interval: '5m',
         threshold: '33',  // percent of unhealthy hosts
       },
+
+      xdsUpdateFailed: {
+        enabled: true,
+        severity: 'warning',
+        interval: '5m',
+        threshold: '0',  // any failure triggers alert
+      },
+    },
+
+    // Envoy Gateway dashboard configuration
+    envoyGateway: {
+      enabled: true,
     },
 
     // Custom annotations to display in graphs

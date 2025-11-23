@@ -224,6 +224,35 @@
               dashboard_url: $._config.dashboardUrls['envoy-upstream'] + '?var-namespace={{ $labels.namespace }}&var-envoy_cluster_name={{ $labels.envoy_cluster_name }}' + clusterVariableQueryString,
             },
           },
+          if $._config.envoyGateway.enabled && $._config.alerts.xdsUpdateFailed.enabled then {
+            alert: 'EnvoyXDSUpdateFailed',
+            expr: |||
+              sum(
+                increase(
+                  xds_snapshot_update_total{
+                    %(envoySelector)s,
+                    status!="success"
+                  }[%(interval)s]
+                )
+              ) by (%(clusterLabel)s, namespace, status, nodeID)
+              > %(threshold)s
+            ||| % (
+              $._config
+              {
+                interval: $._config.alerts.xdsUpdateFailed.interval,
+                threshold: $._config.alerts.xdsUpdateFailed.threshold,
+              }
+            ),
+            'for': '1m',
+            labels: {
+              severity: $._config.alerts.xdsUpdateFailed.severity,
+            },
+            annotations: {
+              summary: 'Envoy Gateway XDS snapshot update failed.',
+              description: 'XDS snapshot update failed for node {{ $labels.nodeID }} in {{ $labels.namespace }} with status {{ $labels.status }} the past %(interval)s.' % $._config.alerts.xdsUpdateFailed,
+              dashboard_url: $._config.dashboardUrls['envoy-gateway-overview'] + '?var-namespace={{ $labels.namespace }}' + clusterVariableQueryString,
+            },
+          },
         ]),
       },
     ],

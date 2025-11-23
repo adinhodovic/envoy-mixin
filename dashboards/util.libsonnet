@@ -50,6 +50,12 @@ local query = variable.query;
       %(default)s,
       %(envoyHttpConnManagerPrefixSingle)s
     ||| % this,
+
+    envoyGateway: |||
+      %(cluster)s,
+      %(namespace)s,
+      %(job)s
+    ||| % this,
   },
 
   variables(config):: {
@@ -176,5 +182,45 @@ local query = variable.query;
         'pod',
         'label_values(envoy_listener_http_downstream_rq_xx{%(cluster)s, %(namespace)s, %(job)s, %(envoyHttpConnManagerPrefix)s}, pod)' % defaultFilters,
       ),
+
+    // Envoy Gateway
+    envoyGatewayCluster:
+      query.new(
+        'cluster',
+        'label_values(xds_snapshot_update_total{}, cluster)' % defaultFilters
+      ) +
+      query.withDatasourceFromVariable(this.datasource) +
+      query.withSort() +
+      query.generalOptions.withLabel('Cluster') +
+      query.selectionOptions.withMulti(true) +
+      query.selectionOptions.withIncludeAll(true) +
+      query.refresh.onLoad() +
+      query.refresh.onTime(),
+
+    envoyGatewayNamespace:
+      query.new(
+        'namespace',
+        'label_values(xds_snapshot_update_total{%(cluster)s}, namespace)' % defaultFilters
+      ) +
+      query.withDatasourceFromVariable(this.datasource) +
+      query.withSort() +
+      query.generalOptions.withLabel('Namespace') +
+      query.selectionOptions.withMulti(true) +
+      query.selectionOptions.withIncludeAll(true) +
+      query.refresh.onLoad() +
+      query.refresh.onTime(),
+
+    envoyGatewayJob:
+      query.new(
+        'job',
+        'label_values(xds_snapshot_update_total{%(cluster)s, %(namespace)s}, job)' % defaultFilters
+      ) +
+      query.withDatasourceFromVariable(this.datasource) +
+      query.withSort() +
+      query.generalOptions.withLabel('Job') +
+      query.selectionOptions.withMulti(true) +
+      query.selectionOptions.withIncludeAll(true) +
+      query.refresh.onLoad() +
+      query.refresh.onTime(),
   },
 }
