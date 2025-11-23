@@ -33,3 +33,10 @@ rule {
   }
   disable = ["promql/regexp"]
 }
+
+rule {
+  match {
+    name = "EnvoyXDSUpdateFailed"
+  }
+  disable = ["promql/regexp"]
+}
