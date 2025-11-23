@@ -53,12 +53,44 @@ tests:
         alertname: EnvoyCircuitBreakerOpen
         exp_alerts:
           - exp_labels:
-              job: envoy-metrics
               namespace: default
-              pod: envoy-test
               envoy_cluster_name: test-cluster
               severity: warning
             exp_annotations:
               summary: "Envoy circuit breaker is open."
               description: "Circuit breaker is open for cluster test-cluster in default for the past 5m."
+              dashboard_url: "https://grafana.com/d/envoy-upstream-skj2/envoy-upstream?var-namespace=default&var-envoy_cluster_name=test-cluster"
+  - interval: 1m
+    input_series:
+      - series: 'envoy_cluster_upstream_cx_connect_fail{job="envoy-metrics", namespace="default", pod="envoy-test", envoy_cluster_name="test-cluster"}'
+        values: "1+6100x20"
+    alert_rule_test:
+      - eval_time: 20m
+        alertname: EnvoyUpstreamConnectionFailures
+        exp_alerts:
+          - exp_labels:
+              namespace: default
+              envoy_cluster_name: test-cluster
+              severity: warning
+            exp_annotations:
+              summary: "Envoy upstream connection failures detected."
+              description: "More than 100 connection failures for cluster test-cluster in default the past 5m."
+              dashboard_url: "https://grafana.com/d/envoy-upstream-skj2/envoy-upstream?var-namespace=default&var-envoy_cluster_name=test-cluster"
+  - interval: 1m
+    input_series:
+      - series: 'envoy_cluster_membership_total{job="envoy-metrics", namespace="default", pod="envoy-test", envoy_cluster_name="test-cluster"}'
+        values: "10+0x10"
+      - series: 'envoy_cluster_membership_healthy{job="envoy-metrics", namespace="default", pod="envoy-test", envoy_cluster_name="test-cluster"}'
+        values: "6+0x10"
+    alert_rule_test:
+      - eval_time: 10m
+        alertname: EnvoyUpstreamUnhealthyHosts
+        exp_alerts:
+          - exp_labels:
+              namespace: default
+              envoy_cluster_name: test-cluster
+              severity: warning
+            exp_annotations:
+              summary: "Envoy upstream has unhealthy hosts."
+              description: "More than 33% of hosts are unhealthy for cluster test-cluster in default for the past 5m."
               dashboard_url: "https://grafana.com/d/envoy-upstream-skj2/envoy-upstream?var-namespace=default&var-envoy_cluster_name=test-cluster"

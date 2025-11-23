@@ -52,6 +52,20 @@
         severity: 'warning',
         interval: '5m',
       },
+
+      upstreamConnectionFailures: {
+        enabled: true,
+        severity: 'warning',
+        interval: '5m',
+        threshold: '100',  // total connection failures in the interval
+      },
+
+      upstreamUnhealthyHosts: {
+        enabled: true,
+        severity: 'warning',
+        interval: '5m',
+        threshold: '33',  // percent of unhealthy hosts
+      },
     },
 
     // Custom annotations to display in graphs
