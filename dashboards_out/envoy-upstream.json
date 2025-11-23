@@ -4,7 +4,7 @@
    "annotations": {
       "list": [ ]
    },
-   "description": "A dashboard that monitors Envoy with a focus on giving an upstreams. The dashboards were generated using [envoy-mixin](https://github.com/adinhodovic/envoy-mixin). Open issues and create feature requests in the repository.",
+   "description": "A dashboard that monitors Envoy with a focus on giving an overview of upstreams. The dashboards were generated using [envoy-mixin](https://github.com/adinhodovic/envoy-mixin). Open issues and create feature requests in the repository.",
    "editable": false,
    "links": [
       {

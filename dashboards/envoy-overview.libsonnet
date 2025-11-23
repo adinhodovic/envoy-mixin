@@ -1010,7 +1010,7 @@ local tbOverride = tbStandardOptions.override;
       dashboard.new(
         'Envoy / Overview',
       ) +
-      dashboard.withDescription('A dashboard that monitors Envoy with a focus on giving an overview. %s' % mixinUtils.dashboards.dashboardDescriptionLink('envoy-mixin', 'https://github.com/adinhodovic/envoy-mixin')) +
+      dashboard.withDescription('A dashboard that monitors Envoy with a focus on giving an generic overview. %s' % mixinUtils.dashboards.dashboardDescriptionLink('envoy-mixin', 'https://github.com/adinhodovic/envoy-mixin')) +
       dashboard.withUid($._config.dashboardIds[dashboardName]) +
       dashboard.withTags($._config.tags) +
       dashboard.withTimezone('utc') +

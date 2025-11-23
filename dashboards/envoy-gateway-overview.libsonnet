@@ -249,7 +249,7 @@ local grid = g.util.grid;
         dashboard.new(
           'Envoy Gateway / Overview',
         ) +
-        dashboard.withDescription('A dashboard that monitors Envoy Gateway with a focus on resource management and XDS updates. %s' % mixinUtils.dashboards.dashboardDescriptionLink('envoy-mixin', 'https://github.com/adinhodovic/envoy-mixin')) +
+        dashboard.withDescription('A dashboard that monitors Envoy Gateway with a focus on Kubernetes objects and XDS updates. %s' % mixinUtils.dashboards.dashboardDescriptionLink('envoy-mixin', 'https://github.com/adinhodovic/envoy-mixin')) +
         dashboard.withUid($._config.dashboardIds[dashboardName]) +
         dashboard.withTags($._config.tags) +
         dashboard.withTimezone('utc') +

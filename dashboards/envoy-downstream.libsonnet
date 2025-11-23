@@ -456,7 +456,7 @@ local grid = g.util.grid;
       dashboard.new(
         'Envoy / Downstream',
       ) +
-      dashboard.withDescription('A dashboard that monitors Envoy with a focus on giving a downstreams overview. %s' % mixinUtils.dashboards.dashboardDescriptionLink('envoy-mixin', 'https://github.com/adinhodovic/envoy-mixin')) +
+      dashboard.withDescription('A dashboard that monitors Envoy with a focus on giving an overview of downsreams. %s' % mixinUtils.dashboards.dashboardDescriptionLink('envoy-mixin', 'https://github.com/adinhodovic/envoy-mixin')) +
       dashboard.withUid($._config.dashboardIds[dashboardName]) +
       dashboard.withTags($._config.tags) +
       dashboard.withTimezone('utc') +
