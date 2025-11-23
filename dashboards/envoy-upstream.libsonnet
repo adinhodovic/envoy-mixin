@@ -32,7 +32,7 @@ local tbOverride = tbStandardOptions.override;
         defaultVariables.namespace,
         defaultVariables.job,
         defaultVariables.envoyClusterNameSingle,
-        defaultVariables.pod,
+        defaultVariables.podUpstream,
       ];
 
       local defaultFilters = util.filters($._config);

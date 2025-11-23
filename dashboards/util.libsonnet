@@ -16,6 +16,8 @@ local query = variable.query;
     // Literal match for single selection
     envoyClusterNameSingle: 'envoy_cluster_name="$envoy_cluster_name"',
     envoyHttpConnManagerPrefix: 'envoy_http_conn_manager_prefix=~"$envoy_http_conn_manager_prefix"',
+    // Literal match for single selection
+    envoyHttpConnManagerPrefixSingle: 'envoy_http_conn_manager_prefix="$envoy_http_conn_manager_prefix"',
     pod: 'pod=~"$pod"',
 
     base: |||
@@ -42,6 +44,11 @@ local query = variable.query;
     downstream: |||
       %(default)s,
       %(envoyHttpConnManagerPrefix)s
+    ||| % this,
+
+    downstreamSingle: |||
+      %(default)s,
+      %(envoyHttpConnManagerPrefixSingle)s
     ||| % this,
   },
 
@@ -138,10 +145,15 @@ local query = variable.query;
       query.refresh.onLoad() +
       query.refresh.onTime(),
 
+    envoyHttpConnManagerPrefixSingle:
+      this.envoyHttpConnManagerPrefix +
+      query.selectionOptions.withMulti(true) +
+      query.selectionOptions.withIncludeAll(false),
+
     pod:
       query.new(
         'pod',
-        'label_values(envoy_cluster_upstream_rq_xx{%(cluster)s, %(namespace)s, %(job)s, %(envoyClusterName)s}, pod)' % defaultFilters
+        'label_values(envoy_listener_http_downstream_rq_xx{%(cluster)s, %(namespace)s, %(job)s}, pod)' % defaultFilters
       ) +
       query.withDatasourceFromVariable(this.datasource) +
       query.withSort() +
@@ -150,5 +162,19 @@ local query = variable.query;
       query.selectionOptions.withIncludeAll(true) +
       query.refresh.onLoad() +
       query.refresh.onTime(),
+
+    podUpstream:
+      this.pod +
+      query.new(
+        'pod',
+        'label_values(envoy_cluster_upstream_rq_xx{%(cluster)s, %(namespace)s, %(job)s, %(envoyClusterName)s}, pod)' % defaultFilters,
+      ),
+
+    podDownstream:
+      this.pod +
+      query.new(
+        'pod',
+        'label_values(envoy_listener_http_downstream_rq_xx{%(cluster)s, %(namespace)s, %(job)s, %(envoyHttpConnManagerPrefix)s}, pod)' % defaultFilters,
+      ),
   },
 }
