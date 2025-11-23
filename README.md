@@ -1,6 +1,8 @@
 # Prometheus Monitoring Mixin for Envoy and Envoy Gateway
 
-A set of Grafana dashboards and Prometheus alerts for Envoy and Envoy Gateway.
+A set of Grafana dashboards and Prometheus alerts for [Envoy](https://github.com/envoyproxy/envoy) and [Envoy Gateway](https://github.com/envoyproxy/gateway).
+
+Highly useful for migrating from [ingress-nginx](https://github.com/kubernetes/ingress-nginx) to [Envoy Gateway](https://github.com/envoyproxy/gateway).
 
 ## How to use
 
@@ -48,11 +50,11 @@ The mixin follows the [monitoring-mixins guidelines](https://github.com/monitori
 
 ### Overview Dashboard
 
-![envoy-operational-overview](images/envoy-overview.png)
+![envoy-overview](images/envoy-overview.png)
 
 ### Upstream Dashboard
 
-![envoy-application-overview](images/envoy-overview.png)
+![envoy-upstream](images/envoy-upstream.png)
 
 ### Envoy Gateway Dashboard
 
