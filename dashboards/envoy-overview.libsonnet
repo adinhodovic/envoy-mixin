@@ -721,10 +721,10 @@ local tbOverride = tbStandardOptions.override;
             ]
           ) +
           tbStandardOptions.withLinks([
-            tbPanelOptions.link.withTitle('Go To Application') +
+            tbPanelOptions.link.withTitle('Go To Upstream') +
             tbPanelOptions.link.withType('dashboard') +
             tbPanelOptions.link.withUrl(
-              '/d/%s/envoy-application-overview?&var-project=${__data.fields.Project}&var-application=${__data.fields.Application}' % $._config.dashboardIds['envoy-overview']
+              '/d/%s/envoy-upstream?&var-envoy_cluster_name=${__data.fields.Envoy Cluster Name}' % $._config.dashboardIds['envoy-upstream']
             ) +
             tbPanelOptions.link.withTargetBlank(true),
           ]),
@@ -891,10 +891,10 @@ local tbOverride = tbStandardOptions.override;
             ],
           ) +
           tbStandardOptions.withLinks([
-            tbPanelOptions.link.withTitle('Go To Application') +
+            tbPanelOptions.link.withTitle('Go To Downstream') +
             tbPanelOptions.link.withType('dashboard') +
             tbPanelOptions.link.withUrl(
-              '/d/%s/envoy-application-overview?&var-project=${__data.fields.Project}&var-application=${__data.fields.Application}' % $._config.dashboardIds['envoy-overview']
+              '/d/%s/envoy-downstream?var-envoy_http_conn_manager_prefix=${__data.fields.Envoy HTTP Conn Manager Prefix}' % $._config.dashboardIds['envoy-downstream']
             ) +
             tbPanelOptions.link.withTargetBlank(true),
           ]),
