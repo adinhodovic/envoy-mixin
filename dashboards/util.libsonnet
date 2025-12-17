@@ -101,11 +101,10 @@ local query = variable.query;
       query.withDatasourceFromVariable(this.datasource) +
       query.withSort() +
       query.generalOptions.withLabel('Namespace') +
-      query.selectionOptions.withMulti(false) +
-      query.selectionOptions.withIncludeAll(false) +
+      query.selectionOptions.withMulti(true) +
+      query.selectionOptions.withIncludeAll(true) +
       query.refresh.onLoad() +
       query.refresh.onTime(),
-
 
     job:
       query.new(

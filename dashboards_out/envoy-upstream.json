@@ -1059,9 +1059,9 @@
                "type": "prometheus",
                "uid": "${datasource}"
             },
-            "includeAll": false,
+            "includeAll": true,
             "label": "Namespace",
-            "multi": false,
+            "multi": true,
             "name": "namespace",
             "query": "label_values(envoy_cluster_upstream_rq_xx{cluster=\"$cluster\"}, namespace)",
             "refresh": 2,
