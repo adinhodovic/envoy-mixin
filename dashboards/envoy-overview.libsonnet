@@ -441,7 +441,7 @@ local tbOverride = tbStandardOptions.override;
             'Envoy Pods',
             'short',
             queries.envoyPodsCount,
-            description='The total number of Envoy pods being monitored.',
+            description='Total number of Envoy proxy pods currently being monitored. A sudden drop may indicate pod crashes or deployment issues, while increases should align with scaling events.',
           ),
 
         upstreamsCountStat:
@@ -449,7 +449,7 @@ local tbOverride = tbStandardOptions.override;
             'Upstreams',
             'short',
             queries.upstreamsCount,
-            description='The total number of upstreams being monitored.',
+            description='Total count of unique upstream clusters (backend services) configured across all Envoy proxies. Changes in this metric indicate service discovery updates or configuration changes.',
           ),
 
         downstreamsCountStat:
@@ -457,7 +457,7 @@ local tbOverride = tbStandardOptions.override;
             'Downstreams',
             'short',
             queries.downstreamsCount,
-            description='The total number of downstreams being monitored.',
+            description='Total count of downstream HTTP connection managers (ingress listeners) across all Envoy proxies. Represents the number of distinct entry points accepting client traffic.',
           ),
 
         upstreamActiveCxStat:
@@ -465,7 +465,7 @@ local tbOverride = tbStandardOptions.override;
             'Upstream Active Connections',
             'short',
             queries.upstreamActiveCx,
-            description='The total number of active upstream connections across all Envoy clusters being monitored.',
+            description='Current number of active TCP connections from Envoy proxies to upstream services. High values may indicate connection pooling issues or slow backend responses. Compare with request rate to assess connection efficiency.',
           ),
 
         downstreamActiveCxStat:
@@ -473,7 +473,7 @@ local tbOverride = tbStandardOptions.override;
             'Downstream Active Connections',
             'short',
             queries.downstreamActiveCx,
-            description='The total number of active downstream connections across all Envoy clusters being monitored.',
+            description='Current number of active TCP connections from clients to Envoy proxies. Sudden spikes may indicate traffic surges or slow request processing. Monitor alongside request rates to identify connection leaks.',
           ),
 
         membershipHealthyPercentStat:
@@ -481,7 +481,7 @@ local tbOverride = tbStandardOptions.override;
             'Membership Healthy Percent',
             'percent',
             queries.membershipHealthyPercent,
-            description='The percentage of healthy members in the Envoy clusters being monitored.',
+            description='Percentage of healthy upstream endpoints across all clusters based on active health checks. Values below 100% indicate failing health checks - investigate unhealthy hosts immediately as this impacts traffic distribution and availability.',
           ),
 
         upstreamRateByEnvoyClusterNamePieChart:
@@ -490,7 +490,7 @@ local tbOverride = tbStandardOptions.override;
             'reqps',
             queries.upstreamRateByEnvoyClusterName1h,
             '{{ envoy_cluster_name }}',
-            description='The distribution of upstream request rates by Envoy cluster name.',
+            description='Distribution of upstream request traffic across backend clusters over the past hour. Shows which services receive the most traffic. Use this to identify hot spots, validate load distribution, and detect unexpected traffic patterns to specific backends.',
           ),
 
         upstreamRateByCodeClassPieChart:
@@ -499,7 +499,7 @@ local tbOverride = tbStandardOptions.override;
             'reqps',
             queries.upstreamRateByCodeClass1h,
             '{{ envoy_response_code_class }}xx',
-            description='The distribution of upstream request rates by response code class.',
+            description='Breakdown of upstream responses by HTTP status code class (2xx, 3xx, 4xx, 5xx) over the past hour. High proportions of 4xx may indicate client errors or misconfigurations, while 5xx indicates backend failures requiring immediate attention.',
           ),
 
         downstreamRateByEnvoyHttpConnManagerPrefixPieChart:
@@ -508,7 +508,7 @@ local tbOverride = tbStandardOptions.override;
             'reqps',
             queries.downstreamRateByEnvoyHttpConnManagerPrefix1h,
             '{{ envoy_http_conn_manager_prefix }}',
-            description='The distribution of downstream request rates by Envoy HTTP connection manager prefix.',
+            description='Distribution of incoming client traffic across different HTTP connection managers (listeners) over the past hour. Helps identify which ingress points receive the most traffic and validate routing configurations.',
           ),
 
         upstreamRateByPodPieChart:
@@ -517,7 +517,7 @@ local tbOverride = tbStandardOptions.override;
             'reqps',
             queries.upstreamRateByPod1h,
             '{{ pod }}',
-            description='The distribution of upstream request rates by pod.',
+            description='Distribution of upstream requests across Envoy proxy pods over the past hour. Use this to verify load balancing across proxy instances and identify if specific pods are handling disproportionate traffic, which may indicate scaling or routing issues.',
           ),
 
         // Upstream
@@ -527,7 +527,7 @@ local tbOverride = tbStandardOptions.override;
             'reqps',
             queries.upstreamRate,
             'Upstream',
-            description='The upstream request rate over time.',
+            description='Aggregated upstream request rate across all selected clusters over time. Shows overall backend traffic volume. Sudden drops may indicate upstream failures or circuit breaker activations. Spikes could indicate retry storms or traffic surges.',
             stack='normal',
           ),
 
@@ -550,7 +550,7 @@ local tbOverride = tbStandardOptions.override;
                 exemplar: true,
               },
             ],
-            description='The upstream latency percentiles over time.',
+            description='Upstream request latency percentiles (P50, P95, P99) measured from Envoy to backend services. Includes connection establishment, request transmission, backend processing, and response receipt. Increasing P95/P99 often indicates backend degradation before P50 is affected. Use exemplars to trace high-latency requests.',
           ),
 
         upstreamSuccessRate5xxTimeSeries:
@@ -563,7 +563,7 @@ local tbOverride = tbStandardOptions.override;
                 legend: 'Success Rate',
               },
             ],
-            description='The upstream success rate over time, counting 5xx response codes as errors.',
+            description='Percentage of successful upstream requests (non-5xx responses). This metric treats 4xx errors as successful since they typically indicate client issues, not backend failures. Values below 99.9% may indicate backend health problems. Correlate drops with circuit breaker openings and health check failures.',
             stack='normal',
             min=0,
             max=100
@@ -579,7 +579,7 @@ local tbOverride = tbStandardOptions.override;
                 legend: 'Success Rate',
               },
             ],
-            description='The upstream success rate over time, counting 4xx and 5xx response codes as errors.',
+            description='Percentage of successful upstream requests (non-4xx/5xx responses). This stricter metric counts both client errors (4xx) and server errors (5xx) as failures. Use this to assess overall request success from an end-user perspective. Lower rates may indicate API contract issues, authentication problems, or backend failures.',
             stack='normal',
             min=0,
             max=100
@@ -591,7 +591,7 @@ local tbOverride = tbStandardOptions.override;
             'reqps',
             queries.upstreamRateByCodeClass,
             '{{ envoy_response_code_class }}xx',
-            description='The upstream request rate by response code class over time.',
+            description='Upstream request rate broken down by HTTP status code class (2xx success, 3xx redirects, 4xx client errors, 5xx server errors). Monitor for sudden increases in 4xx (often indicates API changes or client misconfigurations) or 5xx (backend failures requiring immediate investigation).',
             stack='normal',
           ),
 
@@ -601,7 +601,7 @@ local tbOverride = tbStandardOptions.override;
             'connections',
             queries.upstreamCxActive,
             '{{ envoy_cluster_name }}',
-            description='The number of active upstream connections by Envoy cluster name over time.',
+            description='Number of currently active TCP connections from Envoy to each upstream cluster. Persistent high values relative to request rate may indicate connection pooling issues, HTTP/1.1 connection reuse problems, or slow-draining connections. Compare with circuit breaker limits to identify potential bottlenecks.',
             stack='normal',
           ),
 
@@ -732,7 +732,7 @@ local tbOverride = tbStandardOptions.override;
             'reqps',
             queries.downstreamRateByEnvoyHttpConnManagerPrefix,
             '{{ envoy_http_conn_manager_prefix }}',
-            description='The downstream request rate by Envoy HTTP connection manager prefix over time.',
+            description='Client request rate by HTTP connection manager (listener) over time. Shows top 20 busiest ingress points. Use this to identify traffic patterns, detect sudden spikes that may indicate attacks, or validate that traffic is being distributed as expected across listeners.',
             stack='normal',
           ),
 
@@ -755,7 +755,7 @@ local tbOverride = tbStandardOptions.override;
                 exemplar: true,
               },
             ],
-            description='The downstream latency percentiles over time.',
+            description='End-to-end request latency percentiles (P50, P95, P99) as experienced by clients. Includes time from request receipt to response completion. Rising P95/P99 indicates degraded user experience - investigate upstream latency, connection issues, or resource constraints. Use exemplars to trace slow requests.',
           ),
 
         downstreamSuccessRate5xxTimeSeries:
@@ -768,7 +768,7 @@ local tbOverride = tbStandardOptions.override;
                 legend: 'Success Rate',
               },
             ],
-            description='The downstream success rate over time, counting 5xx response codes as errors.',
+            description='Percentage of successful client requests (non-5xx responses). Treats 4xx as successful since they indicate client errors, not service failures. Values below 99.9% indicate problems with backends or Envoy itself. Correlate with upstream metrics and error logs to diagnose issues.',
             stack='normal',
             min=0,
             max=100
@@ -784,7 +784,7 @@ local tbOverride = tbStandardOptions.override;
                 legend: 'Success Rate',
               },
             ],
-            description='The downstream success rate over time, counting 4xx and 5xx response codes as errors.',
+            description='Percentage of successful client requests (non-4xx/5xx responses). Stricter metric counting both client and server errors as failures. Reflects actual user experience - drops indicate authentication issues, invalid requests, or backend failures. Use to assess overall API health from client perspective.',
             stack='normal',
             min=0,
             max=100
@@ -901,7 +901,7 @@ local tbOverride = tbStandardOptions.override;
             'dateTimeAsIso',
             queries.sslExpirationsByEnvoyTlsCertificate,
             '{{ envoy_tls_certificate }}',
-            description='The SSL certificate expiration times by Envoy TLS certificate over time.',
+            description='SSL/TLS certificate expiration dates for each certificate loaded by Envoy listeners. Displays minimum expiration time to highlight the most urgent renewal needed. Monitor this panel to prevent service disruptions due to expired certificates. Set up alerts for certificates expiring within 30 days.',
             calcs=['min']
           ),
       };
@@ -1010,7 +1010,7 @@ local tbOverride = tbStandardOptions.override;
       dashboard.new(
         'Envoy / Overview',
       ) +
-      dashboard.withDescription('A dashboard that monitors Envoy with a focus on giving an generic overview. %s' % mixinUtils.dashboards.dashboardDescriptionLink('envoy-mixin', 'https://github.com/adinhodovic/envoy-mixin')) +
+      dashboard.withDescription('A comprehensive overview dashboard for monitoring Envoy proxy deployments. Provides high-level metrics across all upstreams and downstreams including request rates, latency percentiles, success rates, active connections, and SSL certificate expirations. Use this dashboard to identify trends, spot anomalies, and drill down into specific upstream clusters or downstream connection managers. %s' % mixinUtils.dashboards.dashboardDescriptionLink('envoy-mixin', 'https://github.com/adinhodovic/envoy-mixin')) +
       dashboard.withUid($._config.dashboardIds[dashboardName]) +
       dashboard.withTags($._config.tags) +
       dashboard.withTimezone('utc') +
