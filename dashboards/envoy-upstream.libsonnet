@@ -259,7 +259,7 @@ local grid = g.util.grid;
             'upstreams',
             queries.upstreamsCountJob,
             '{{ job }}',
-            description='The distribution of upstreams by job.',
+            description='Distribution of upstream clusters across different Prometheus job labels. Useful for understanding how backend services are organized across different Envoy deployments or environments. Imbalanced distribution may indicate configuration inconsistencies.',
           ),
 
         upstreamActiveCxByEnvoyClusterNamePieChart:
@@ -268,7 +268,7 @@ local grid = g.util.grid;
             'short',
             queries.upstreamActiveCx,
             '{{ envoy_cluster_name }}',
-            description='The distribution of active upstream connections by Envoy cluster name.',
+            description='Distribution of currently active TCP connections to upstream services. Shows which backend clusters are consuming the most connections. Disproportionately high connection counts may indicate connection pooling issues, slow backends, or HTTP/1.1 connection inefficiency. Compare with request rates to assess connection reuse.',
           ),
 
         upstreamRateByEnvoyClusterNamePieChart:
@@ -277,7 +277,7 @@ local grid = g.util.grid;
             'reqps',
             queries.upstreamRateByEnvoyClusterName1h,
             '{{ envoy_cluster_name }}',
-            description='The distribution of upstream request rates by Envoy cluster name.',
+            description='Request rate distribution across upstream clusters over the past hour (top 20). Identifies which backend services receive the most traffic. Use this to validate load distribution, detect traffic shifts after deployments, and identify hot services that may need scaling.',
           ),
 
         upstreamRateByCodeClassPieChart:
@@ -286,7 +286,7 @@ local grid = g.util.grid;
             'reqps',
             queries.upstreamRateByCodeClass1h,
             '{{ envoy_response_code_class }}xx',
-            description='The distribution of upstream request rates by response code class.',
+            description='Breakdown of upstream responses by HTTP status code class over the past hour. Healthy services typically show 95%+ 2xx responses. High 4xx proportions suggest API contract issues or client misconfigurations. Any 5xx responses indicate backend failures requiring immediate investigation.',
           ),
 
         // Upstream
@@ -296,7 +296,7 @@ local grid = g.util.grid;
             'reqps',
             queries.upstreamRate,
             '{{ envoy_cluster_name }}',
-            description='The upstream request rate by Envoy cluster name over time.',
+            description='Request rate per upstream cluster over time. Each line represents traffic to a specific backend service. Sudden drops may indicate circuit breaker activation, upstream failures, or routing changes. Gradual increases suggest growing load. Use this to identify which clusters need scaling or optimization.',
             stack='normal',
           ),
 
@@ -319,7 +319,7 @@ local grid = g.util.grid;
                 exemplar: true,
               },
             ],
-            description='The upstream latency percentiles over time.',
+            description='Backend service response time percentiles. P50 represents typical latency, while P95/P99 show tail latency affecting a subset of requests. Rising P99 often precedes visible performance degradation. Investigate backends when P95 exceeds SLO targets. Exemplars link to distributed traces for root cause analysis.',
           ),
 
         upstreamSuccessRate5xxTimeSeries:
@@ -332,7 +332,7 @@ local grid = g.util.grid;
                 legend: 'Success Rate',
               },
             ],
-            description='The upstream success rate over time, counting 5xx response codes as errors.',
+            description='Backend success rate treating 4xx as successful (client errors, not backend failures). Drops below 99.9% indicate backend health issues. Correlate with circuit breaker metrics, health check status, and backend logs. Sustained low rates may trigger automatic circuit breaking.',
             stack='normal',
             min=0,
             max=100
@@ -348,7 +348,7 @@ local grid = g.util.grid;
                 legend: 'Success Rate',
               },
             ],
-            description='The upstream success rate over time, counting 4xx and 5xx response codes as errors.',
+            description='Overall success rate counting both 4xx and 5xx as failures. Reflects end-user experience including authentication, authorization, and validation errors. Lower rates may indicate API contract mismatches, breaking changes, or integration issues between services.',
             stack='normal',
             min=0,
             max=100
@@ -360,7 +360,7 @@ local grid = g.util.grid;
             'reqps',
             queries.upstreamRateByCodeClass,
             '{{ envoy_response_code_class }}xx',
-            description='The upstream request rate by response code class over time.',
+            description='Request rate breakdown by HTTP status code class (2xx/3xx/4xx/5xx). Normal traffic shows dominant 2xx responses. Sudden 4xx spikes suggest client-side issues or API changes. Any 5xx indicates backend failures. Monitor 5xx rate to detect cascading failures early.',
             stack='normal',
           ),
 
@@ -370,7 +370,7 @@ local grid = g.util.grid;
             'reqps',
             queries.upstreamRateByCode,
             '{{ envoy_response_code }}',
-            description='The upstream request rate by response code over time.',
+            description='Detailed request rate by specific HTTP status code (200, 404, 500, etc.). Use this to identify specific error patterns. For example, 503 may indicate overload, 502 suggests gateway issues, and 429 shows rate limiting activation. Helps pinpoint exact failure modes.',
             stack='normal',
           ),
 
@@ -380,7 +380,7 @@ local grid = g.util.grid;
             'percent',
             queries.upstreamHealthyPercentByEnvoyClusterName,
             '{{ envoy_cluster_name }}',
-            description='The percentage of healthy upstream members by Envoy cluster name over time.',
+            description='Percentage of healthy endpoints per cluster based on active health checks. 100% indicates all endpoints passing health checks. Drops suggest failing instances - check pod logs, resource usage, and health check configurations. Envoy removes unhealthy endpoints from load balancing rotation.',
             stack='normal',
             min=0,
             max=100
@@ -408,7 +408,7 @@ local grid = g.util.grid;
                 legend: 'Connect Failures',
               },
             ],
-            description='The upstream connections over time.',
+            description='Connection lifecycle metrics. Active shows current open connections. Overflow indicates circuit breaker limits exceeded - increase limits or scale backends. Destroyed tracks normal connection teardown. Connect failures suggest network issues, DNS problems, or unreachable backends.',
           ),
 
         upstreamCircuitBreakersTimeSeries:
@@ -429,7 +429,7 @@ local grid = g.util.grid;
                 legend: 'Open Requests',
               },
             ],
-            description='The upstream circuit breakers over time.',
+            description='Circuit breaker activation counts. Non-zero values indicate protection mechanisms triggered to prevent cascade failures. Open Connections = max concurrent connections reached. Open Requests = max pending requests exceeded. Persistent activation suggests undersized limits or backend overload requiring scaling.',
             stack='normal',
           ),
 
@@ -451,7 +451,7 @@ local grid = g.util.grid;
                 legend: 'Timeout Rate',
               },
             ],
-            description='The upstream retry rates over time.',
+            description='Retry and timeout patterns. Retry Rate shows automatic retry attempts for failed requests. Retry Overflow means retry budget exhausted - may indicate persistent failures or aggressive retry policies. Timeout Rate tracks requests exceeding configured deadlines - investigate slow backends or network latency.',
             stack='normal',
           ),
 
@@ -461,7 +461,7 @@ local grid = g.util.grid;
             'reqps',
             queries.upstreamRateByPod,
             '{{ pod }}',
-            description='The upstream request rate by pod over time.',
+            description='Request distribution across Envoy proxy pods for this upstream cluster. Ideally shows even distribution. Imbalanced traffic may indicate pod scheduling issues, uneven client distribution, or connection affinity problems. Use to verify horizontal scaling effectiveness.',
             stack='normal',
           ),
 
@@ -471,7 +471,7 @@ local grid = g.util.grid;
             'short',
             queries.upstreamCxActiveByPod,
             '{{ pod }}',
-            description='The upstream active connections by pod over time.',
+            description='Active connections per Envoy pod to this upstream cluster. Should correlate with request rates. High connections with low requests suggest connection pooling inefficiency or slow-draining connections. Uneven distribution may indicate pod-level issues requiring investigation.',
             stack='normal',
           ),
       };
@@ -528,7 +528,7 @@ local grid = g.util.grid;
       dashboard.new(
         'Envoy / Upstream',
       ) +
-      dashboard.withDescription('A dashboard that monitors Envoy with a focus on giving an overview of upstreams. %s' % mixinUtils.dashboards.dashboardDescriptionLink('envoy-mixin', 'https://github.com/adinhodovic/envoy-mixin')) +
+      dashboard.withDescription('Detailed upstream cluster monitoring for Envoy proxy. Tracks request rates, latency distributions (P50/P95/P99), success rates, connection health, circuit breaker status, retry behavior, and timeout patterns for each upstream cluster. Use this dashboard to troubleshoot backend service issues, identify performance bottlenecks, and monitor cluster health across all Envoy pods. Supports multi-cluster selection for comparative analysis. %s' % mixinUtils.dashboards.dashboardDescriptionLink('envoy-mixin', 'https://github.com/adinhodovic/envoy-mixin')) +
       dashboard.withUid($._config.dashboardIds[dashboardName]) +
       dashboard.withTags($._config.tags) +
       dashboard.withTimezone('utc') +

@@ -119,7 +119,7 @@ local grid = g.util.grid;
               'ops',
               queries.resourceApplyTotalByStatusKind,
               '{{ status }}/{{ kind }}',
-              description='The rate of resource apply operations by status and kind.',
+              description='Rate of Kubernetes resource apply operations by status (success/failure) and resource kind (Gateway, HTTPRoute, Service, etc.). Tracks how frequently the Envoy Gateway controller processes Gateway API resources. High failure rates indicate configuration issues, RBAC problems, or API validation errors requiring investigation.',
               stack='normal',
             ),
 
@@ -137,7 +137,7 @@ local grid = g.util.grid;
                   legend: 'P95',
                 },
               ],
-              description='The duration of resource apply operations (P50 and P95).',
+              description='Time taken to apply Kubernetes resources to the cluster (P50 and P95 percentiles). Measures controller performance when reconciling Gateway API objects. Rising latency may indicate API server overload, large resource counts, or controller performance issues. P95 spikes often precede user-visible configuration delays.',
             ),
 
           // Resource Delete
@@ -147,7 +147,7 @@ local grid = g.util.grid;
               'ops',
               queries.resourceDeleteTotalByStatusKind,
               '{{ status }}/{{ kind }}',
-              description='The rate of resource delete operations by status and kind.',
+              description='Rate of Kubernetes resource deletion operations by status and kind. Tracks cleanup of Gateway API resources when they are removed. High failure rates may indicate finalizer issues, orphaned resources, or permission problems preventing proper cleanup. Monitor for resource leaks.',
               stack='normal',
             ),
 
@@ -165,7 +165,7 @@ local grid = g.util.grid;
                   legend: 'P95',
                 },
               ],
-              description='The duration of resource delete operations (P50 and P95).',
+              description='Time taken to delete Kubernetes resources from the cluster (P50 and P95 percentiles). Long deletion times may indicate stuck finalizers, cascading deletions, or API server performance issues. Prolonged P95 delays can prevent timely resource cleanup and cause operational issues.',
             ),
 
           // Status Update
@@ -175,7 +175,7 @@ local grid = g.util.grid;
               'ops',
               queries.statusUpdateTotalByKindStatus,
               '{{ kind }}/{{ status }}',
-              description='The rate of status update operations by kind and status.',
+              description='Rate of status updates to Gateway API resources by kind and status. Controller writes status conditions (Accepted, Programmed, Ready) to inform users of resource state. High failure rates indicate API server connectivity issues or conflicts with other controllers. Essential for user feedback on configuration validity.',
               stack='normal',
             ),
 
@@ -193,7 +193,7 @@ local grid = g.util.grid;
                   legend: 'P95',
                 },
               ],
-              description='The duration of status update operations (P50 and P95).',
+              description='Time taken to update resource status conditions (P50 and P95 percentiles). Status updates provide feedback to users about resource health. Rising latency delays user visibility into configuration problems. P95 spikes may indicate API server throttling or status conflicts with other controllers.',
             ),
 
           // XDS Snapshot Update
@@ -203,7 +203,7 @@ local grid = g.util.grid;
               'ops',
               queries.xdsSnapshotUpdateTotalByStatusNodeID,
               '{{ status }}/{{ nodeID }}',
-              description='The rate of XDS snapshot updates by status and node ID.',
+              description='Rate of xDS (Discovery Service) configuration snapshots pushed to Envoy data plane proxies by status and node ID. Each update delivers routing, cluster, and listener configuration to proxies. Failures indicate proxy connectivity issues or invalid configurations. High update rates may suggest configuration churn requiring optimization.',
               stack='normal',
             ),
         };
@@ -249,7 +249,7 @@ local grid = g.util.grid;
         dashboard.new(
           'Envoy Gateway / Overview',
         ) +
-        dashboard.withDescription('A dashboard that monitors Envoy Gateway with a focus on Kubernetes objects and XDS updates. %s' % mixinUtils.dashboards.dashboardDescriptionLink('envoy-mixin', 'https://github.com/adinhodovic/envoy-mixin')) +
+        dashboard.withDescription('Envoy Gateway control plane monitoring dashboard. Tracks XDS (xDS Discovery Service) snapshot updates to data plane proxies, Kubernetes resource reconciliation (Gateway, HTTPRoute, etc.), resource apply/delete operations with duration metrics, and status update patterns. Use this dashboard to monitor the health and performance of the Envoy Gateway controller, troubleshoot configuration propagation delays, and identify resource management bottlenecks in your Gateway API implementation. %s' % mixinUtils.dashboards.dashboardDescriptionLink('envoy-mixin', 'https://github.com/adinhodovic/envoy-mixin')) +
         dashboard.withUid($._config.dashboardIds[dashboardName]) +
         dashboard.withTags($._config.tags) +
         dashboard.withTimezone('utc') +

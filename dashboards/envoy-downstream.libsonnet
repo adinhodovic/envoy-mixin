@@ -220,7 +220,7 @@ local grid = g.util.grid;
             'downstreams',
             queries.downstreamsCountJob,
             '{{ job }}',
-            description='The distribution of downstreams by job.',
+            description='Distribution of downstream HTTP connection managers across different Prometheus job labels. Helps understand how client-facing listeners are organized across Envoy deployments or environments. Imbalanced distribution may indicate configuration inconsistencies.',
           ),
 
         downstreamActiveCxByEnvoyHttpConnManagerPrefixPieChart:
@@ -229,7 +229,7 @@ local grid = g.util.grid;
             'short',
             queries.downstreamActiveCx,
             '{{ envoy_http_conn_manager_prefix }}',
-            description='The distribution of active downstream connections by Envoy HTTP connection manager prefix.',
+            description='Distribution of currently active client connections across HTTP connection managers. Shows which ingress points are handling the most concurrent connections. High connection counts relative to request rates may indicate slow clients, long-polling connections, or WebSocket traffic.',
           ),
 
         downstreamRateByEnvoyHttpConnManagerPrefixPieChart:
@@ -238,7 +238,7 @@ local grid = g.util.grid;
             'reqps',
             queries.downstreamRateByEnvoyHttpConnManagerPrefix1h,
             '{{ envoy_http_conn_manager_prefix }}',
-            description='The distribution of downstream request rates by Envoy HTTP connection manager prefix.',
+            description='Request rate distribution across downstream connection managers over the past hour (top 20). Identifies which ingress points receive the most client traffic. Use this to validate traffic routing, detect unexpected traffic patterns, and identify hot spots requiring load balancing adjustments.',
           ),
 
         downstreamRateByCodeClassPieChart:
@@ -247,7 +247,7 @@ local grid = g.util.grid;
             'reqps',
             queries.downstreamRateByCodeClass1h,
             '{{ envoy_response_code_class }}xx',
-            description='The distribution of downstream request rates by response code class.',
+            description='Breakdown of client responses by HTTP status code class over the past hour. Healthy services show 95%+ 2xx responses. High 4xx proportions indicate client errors, authentication issues, or invalid requests. Any 5xx responses indicate service failures requiring immediate investigation.',
           ),
 
         // Downstream
@@ -257,7 +257,7 @@ local grid = g.util.grid;
             'reqps',
             queries.downstreamRate,
             '{{ envoy_http_conn_manager_prefix }}',
-            description='The downstream request rate by Envoy HTTP connection manager prefix over time.',
+            description='Client request rate per HTTP connection manager over time. Each line represents traffic to a specific ingress listener. Sudden spikes may indicate traffic surges, DDoS attacks, or sudden popularity. Drops suggest client-side issues or upstream routing changes. Use to monitor ingress traffic patterns.',
             stack='normal',
           ),
 
@@ -280,7 +280,7 @@ local grid = g.util.grid;
                 exemplar: true,
               },
             ],
-            description='The downstream latency percentiles over time.',
+            description='End-to-end request latency as experienced by clients. P50 shows typical response time, P95/P99 reveal tail latency impacting user experience. Rising tail latency often precedes user complaints. Investigate when P95 exceeds SLOs. Correlate with upstream latency to identify bottlenecks. Exemplars enable trace-based debugging.',
           ),
 
         downstreamSuccessRate5xxTimeSeries:
@@ -293,7 +293,7 @@ local grid = g.util.grid;
                 legend: 'Success Rate',
               },
             ],
-            description='The downstream success rate over time, counting 5xx response codes as errors.',
+            description='Client success rate excluding 4xx errors (treating client errors as successful). Values below 99.9% indicate service-side problems. Drops correlate with backend failures or Envoy issues. Compare with upstream success rates to determine if failures originate from backends or proxy layer.',
             stack='normal',
             min=0,
             max=100
@@ -309,7 +309,7 @@ local grid = g.util.grid;
                 legend: 'Success Rate',
               },
             ],
-            description='The downstream success rate over time, counting 4xx and 5xx response codes as errors.',
+            description='Overall client success rate including both 4xx and 5xx as failures. Represents actual end-user experience. Drops may indicate authentication failures, invalid client requests, API contract violations, or backend errors. Use this metric for user-facing SLOs and customer impact assessment.',
             stack='normal',
             min=0,
             max=100
@@ -321,7 +321,7 @@ local grid = g.util.grid;
             'reqps',
             queries.downstreamRateByCodeClass,
             '{{ envoy_response_code_class }}xx',
-            description='The downstream request rate by response code class over time.',
+            description='Client request rate by HTTP status code class (2xx/3xx/4xx/5xx). Normal traffic is dominated by 2xx. Spikes in 4xx may indicate authentication problems, API misuse, or client bugs. Any 5xx indicates service failures. Monitor 401/403 for security issues and 429 for rate limiting effectiveness.',
             stack='normal',
           ),
 
@@ -343,7 +343,7 @@ local grid = g.util.grid;
                 legend: 'Idle Timeout',
               },
             ],
-            description='The downstream connections over time.',
+            description='Client connection lifecycle metrics. Active shows current open connections. Destroyed tracks normal connection teardown. High idle timeouts may indicate misconfigured clients, slow clients, or aggressive timeout settings. Correlate with request rates to identify connection efficiency issues.',
           ),
 
         downstreamCxBytesTimeSeries:
@@ -360,7 +360,7 @@ local grid = g.util.grid;
                 legend: 'Transmitted',
               },
             ],
-            description='The downstream connection bytes received and transmitted over time.',
+            description='Bandwidth usage for client traffic. Received shows data from clients (request bodies, uploads). Transmitted shows data to clients (response bodies, downloads). Use to identify bandwidth-heavy endpoints, detect large file transfers, and plan capacity. Sudden spikes may indicate data exfiltration or abuse.',
           ),
 
         downstreamRqResetTimeSeries:
@@ -381,7 +381,7 @@ local grid = g.util.grid;
                 legend: 'Timeout',
               },
             ],
-            description='The downstream request resets and timeouts over time.',
+            description='Abnormal request termination patterns. RX Reset = client aborted request (client disconnect, timeout). TX Reset = Envoy terminated response (upstream failure, policy violation). Timeouts = request exceeded configured deadline. High rates indicate client issues, network problems, or slow backends.',
             stack='normal',
           ),
 
@@ -391,7 +391,7 @@ local grid = g.util.grid;
             'reqps',
             queries.downstreamRateByPod,
             '{{ pod }}',
-            description='The downstream request rate by pod over time.',
+            description='Client traffic distribution across Envoy proxy pods for this connection manager. Should show even distribution if load balancing works correctly. Imbalanced traffic may indicate L4 load balancer issues, DNS problems, or client-side connection affinity. Use to verify horizontal scaling effectiveness.',
             stack='normal',
           ),
 
@@ -401,7 +401,7 @@ local grid = g.util.grid;
             'short',
             queries.downstreamCxActiveByPod,
             '{{ pod }}',
-            description='The downstream active connections by pod over time.',
+            description='Active client connections per Envoy pod for this connection manager. Should correlate with request rates and show balanced distribution. High connections with low requests indicate long-lived connections (WebSockets, streaming). Uneven distribution suggests load balancer or DNS issues requiring investigation.',
             stack='normal',
           ),
       };
@@ -456,7 +456,7 @@ local grid = g.util.grid;
       dashboard.new(
         'Envoy / Downstream',
       ) +
-      dashboard.withDescription('A dashboard that monitors Envoy with a focus on giving an overview of downsreams. %s' % mixinUtils.dashboards.dashboardDescriptionLink('envoy-mixin', 'https://github.com/adinhodovic/envoy-mixin')) +
+      dashboard.withDescription('Detailed downstream connection monitoring for Envoy proxy. Tracks client-facing metrics including request rates, latency percentiles (P50/P95/P99), success rates, active connections, connection lifecycle events, bandwidth usage, and request reset patterns for each HTTP connection manager. Use this dashboard to analyze client behavior, diagnose connection issues, monitor ingress traffic patterns, and identify potential DDoS or abuse scenarios. Supports multi-prefix selection for comparative analysis. %s' % mixinUtils.dashboards.dashboardDescriptionLink('envoy-mixin', 'https://github.com/adinhodovic/envoy-mixin')) +
       dashboard.withUid($._config.dashboardIds[dashboardName]) +
       dashboard.withTags($._config.tags) +
       dashboard.withTimezone('utc') +
