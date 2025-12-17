@@ -977,20 +977,20 @@
                "id": "organize",
                "options": {
                   "excludeByName": {
-                     "Time": true,
-                     "job": true
+                     "Time": true
                   },
                   "indexByName": {
-                     "Value #A": 1,
-                     "Value #B": 2,
-                     "Value #C": 3,
-                     "Value #D": 4,
-                     "Value #E": 5,
-                     "Value #F": 6,
-                     "Value #G": 7,
-                     "Value #H": 8,
-                     "Value #I": 9,
-                     "envoy_cluster_name": 0
+                     "Value #A": 2,
+                     "Value #B": 3,
+                     "Value #C": 4,
+                     "Value #D": 5,
+                     "Value #E": 6,
+                     "Value #F": 7,
+                     "Value #G": 8,
+                     "Value #H": 9,
+                     "Value #I": 10,
+                     "envoy_cluster_name": 0,
+                     "job": 1
                   },
                   "renameByName": {
                      "Value #A": "Request Rate",
@@ -1445,18 +1445,18 @@
                "id": "organize",
                "options": {
                   "excludeByName": {
-                     "Time": true,
-                     "job": true
+                     "Time": true
                   },
                   "indexByName": {
-                     "Value #A": 1,
-                     "Value #B": 2,
-                     "Value #C": 3,
-                     "Value #D": 4,
-                     "Value #E": 5,
-                     "Value #F": 6,
-                     "Value #G": 7,
-                     "envoy_http_conn_manager_prefix": 0
+                     "Value #A": 2,
+                     "Value #B": 3,
+                     "Value #C": 4,
+                     "Value #D": 5,
+                     "Value #E": 6,
+                     "Value #F": 7,
+                     "Value #G": 8,
+                     "envoy_http_conn_manager_prefix": 0,
+                     "job": 1
                   },
                   "renameByName": {
                      "Value #A": "Request Rate",
