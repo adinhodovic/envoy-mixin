@@ -79,8 +79,8 @@ local query = variable.query;
 
     cluster:
       query.new(
-        config.clusterLabel,
-        'label_values(envoy_cluster_upstream_rq_xx{}, cluster)',
+        'cluster',
+        'label_values(envoy_cluster_upstream_rq_xx{}, %(clusterLabel)s)' % config,
       ) +
       query.withDatasourceFromVariable(this.datasource) +
       query.withSort() +
