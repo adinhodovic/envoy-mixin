@@ -549,7 +549,7 @@
                   "uid": "$datasource"
                },
                "exemplar": false,
-               "expr": "sum(\n  rate(\n    envoy_cluster_upstream_rq_xx{\n      cluster=\"$cluster\",\nnamespace=~\"$namespace\",\njob=~\"$job\",\npod=~\"$pod\"\n\n\n    }[$__rate_interval]\n  )\n) by (envoy_response_code_class)\n",
+               "expr": "sum(\n  rate(\n    envoy_cluster_upstream_rq_xx{\n      cluster=\"$cluster\",\nnamespace=~\"$namespace\",\njob=~\"$job\",\npod=~\"$pod\"\n\n,\nenvoy_cluster_name=\"$envoy_cluster_name\"\n\n    }[$__rate_interval]\n  )\n) by (envoy_response_code_class)\n",
                "legendFormat": "{{ envoy_response_code_class }}xx"
             }
          ],

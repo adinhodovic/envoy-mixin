@@ -112,7 +112,15 @@ local grid = g.util.grid;
         ||| % defaultFilters,
         upstreamSucessRate4xx5xx: std.strReplace(queries.upstreamSuccessRate5xx, 'envoy_response_code_class!="5"', 'envoy_response_code_class!~"4|5"'),
 
-        upstreamRateByCodeClass: std.strReplace(queries.upstreamRateByCodeClass1h, '1h', '$__rate_interval'),
+        upstreamRateByCodeClass: |||
+          sum(
+            rate(
+              envoy_cluster_upstream_rq_xx{
+                %(upstreamSingle)s
+              }[$__rate_interval]
+            )
+          ) by (envoy_response_code_class)
+        ||| % defaultFilters,
 
         upstreamRateByCode: |||
           sum(
