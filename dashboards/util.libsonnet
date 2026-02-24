@@ -191,10 +191,13 @@ local query = variable.query;
       query.withDatasourceFromVariable(this.datasource) +
       query.withSort() +
       query.generalOptions.withLabel('Cluster') +
-      query.selectionOptions.withMulti(true) +
-      query.selectionOptions.withIncludeAll(true) +
       query.refresh.onLoad() +
-      query.refresh.onTime(),
+      query.refresh.onTime() +
+      (
+        if config.showMultiCluster
+        then query.generalOptions.showOnDashboard.withLabelAndValue()
+        else query.generalOptions.showOnDashboard.withNothing()
+      ),
 
     envoyGatewayNamespace:
       query.new(

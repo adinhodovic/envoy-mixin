@@ -489,9 +489,8 @@
                "type": "prometheus",
                "uid": "${datasource}"
             },
-            "includeAll": true,
+            "hide": 2,
             "label": "Cluster",
-            "multi": true,
             "name": "cluster",
             "query": "label_values(xds_snapshot_update_total{}, cluster)",
             "refresh": 2,
