@@ -186,7 +186,7 @@ local query = variable.query;
     envoyGatewayCluster:
       query.new(
         'cluster',
-        'label_values(xds_snapshot_update_total{}, cluster)' % defaultFilters
+        'label_values(xds_snapshot_update_total{}, %(clusterLabel)s)' % config
       ) +
       query.withDatasourceFromVariable(this.datasource) +
       query.withSort() +
