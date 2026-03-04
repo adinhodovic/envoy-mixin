@@ -611,7 +611,7 @@
                   "uid": "$datasource"
                },
                "exemplar": false,
-               "expr": "sum(\n  increase(\n    envoy_http_downstream_cx_destroy{\n      cluster=\"$cluster\",\nnamespace=~\"$namespace\",\njob=~\"$job\",\npod=~\"$pod\"\n\n,\nenvoy_http_conn_manager_prefix=\"$envoy_http_conn_manager_prefix\"\n\n    }[$__rate_interval]\n  )\n) by (job, envoy_http_conn_manager_prefix)\n",
+               "expr": "sum(\n  increase(\n    envoy_http_downstream_cx_destroy{\n      cluster=\"$cluster\",\nnamespace=~\"$namespace\",\njob=~\"$job\",\npod=~\"$pod\"\n\n,\nenvoy_http_conn_manager_prefix=\"$envoy_http_conn_manager_prefix\"\n\n    }[$__rate_interval]\n  )\n) by (envoy_http_conn_manager_prefix)\n",
                "legendFormat": "Destroyed Connections"
             },
             {
@@ -620,7 +620,7 @@
                   "uid": "$datasource"
                },
                "exemplar": false,
-               "expr": "sum(\n  increase(\n    envoy_http_downstream_cx_idle_timeout{\n      cluster=\"$cluster\",\nnamespace=~\"$namespace\",\njob=~\"$job\",\npod=~\"$pod\"\n\n,\nenvoy_http_conn_manager_prefix=\"$envoy_http_conn_manager_prefix\"\n\n    }[$__rate_interval]\n  )\n) by (job, envoy_http_conn_manager_prefix)\n",
+               "expr": "sum(\n  increase(\n    envoy_http_downstream_cx_idle_timeout{\n      cluster=\"$cluster\",\nnamespace=~\"$namespace\",\njob=~\"$job\",\npod=~\"$pod\"\n\n,\nenvoy_http_conn_manager_prefix=\"$envoy_http_conn_manager_prefix\"\n\n    }[$__rate_interval]\n  )\n) by (envoy_http_conn_manager_prefix)\n",
                "legendFormat": "Idle Timeout"
             }
          ],
@@ -673,7 +673,7 @@
                   "uid": "$datasource"
                },
                "exemplar": false,
-               "expr": "sum(\n  rate(\n    envoy_http_downstream_cx_rx_bytes_total{\n      cluster=\"$cluster\",\nnamespace=~\"$namespace\",\njob=~\"$job\",\npod=~\"$pod\"\n\n,\nenvoy_http_conn_manager_prefix=\"$envoy_http_conn_manager_prefix\"\n\n    }[$__rate_interval]\n  )\n) by (job, envoy_http_conn_manager_prefix)\n",
+               "expr": "sum(\n  rate(\n    envoy_http_downstream_cx_rx_bytes_total{\n      cluster=\"$cluster\",\nnamespace=~\"$namespace\",\njob=~\"$job\",\npod=~\"$pod\"\n\n,\nenvoy_http_conn_manager_prefix=\"$envoy_http_conn_manager_prefix\"\n\n    }[$__rate_interval]\n  )\n) by (envoy_http_conn_manager_prefix)\n",
                "legendFormat": "Received"
             },
             {
@@ -682,7 +682,7 @@
                   "uid": "$datasource"
                },
                "exemplar": false,
-               "expr": "sum(\n  rate(\n    envoy_http_downstream_cx_tx_bytes_total{\n      cluster=\"$cluster\",\nnamespace=~\"$namespace\",\njob=~\"$job\",\npod=~\"$pod\"\n\n,\nenvoy_http_conn_manager_prefix=\"$envoy_http_conn_manager_prefix\"\n\n    }[$__rate_interval]\n  )\n) by (job, envoy_http_conn_manager_prefix)\n",
+               "expr": "sum(\n  rate(\n    envoy_http_downstream_cx_tx_bytes_total{\n      cluster=\"$cluster\",\nnamespace=~\"$namespace\",\njob=~\"$job\",\npod=~\"$pod\"\n\n,\nenvoy_http_conn_manager_prefix=\"$envoy_http_conn_manager_prefix\"\n\n    }[$__rate_interval]\n  )\n) by (envoy_http_conn_manager_prefix)\n",
                "legendFormat": "Transmitted"
             }
          ],
@@ -740,7 +740,7 @@
                   "uid": "$datasource"
                },
                "exemplar": false,
-               "expr": "sum(\n  rate(\n    envoy_http_downstream_rq_rx_reset{\n      cluster=\"$cluster\",\nnamespace=~\"$namespace\",\njob=~\"$job\",\npod=~\"$pod\"\n\n,\nenvoy_http_conn_manager_prefix=\"$envoy_http_conn_manager_prefix\"\n\n    }[$__rate_interval]\n  )\n) by (job, envoy_http_conn_manager_prefix)\n",
+               "expr": "sum(\n  rate(\n    envoy_http_downstream_rq_rx_reset{\n      cluster=\"$cluster\",\nnamespace=~\"$namespace\",\njob=~\"$job\",\npod=~\"$pod\"\n\n,\nenvoy_http_conn_manager_prefix=\"$envoy_http_conn_manager_prefix\"\n\n    }[$__rate_interval]\n  )\n) by (envoy_http_conn_manager_prefix)\n",
                "legendFormat": "RX Reset"
             },
             {
@@ -749,7 +749,7 @@
                   "uid": "$datasource"
                },
                "exemplar": false,
-               "expr": "sum(\n  rate(\n    envoy_http_downstream_rq_tx_reset{\n      cluster=\"$cluster\",\nnamespace=~\"$namespace\",\njob=~\"$job\",\npod=~\"$pod\"\n\n,\nenvoy_http_conn_manager_prefix=\"$envoy_http_conn_manager_prefix\"\n\n    }[$__rate_interval]\n  )\n) by (job, envoy_http_conn_manager_prefix)\n",
+               "expr": "sum(\n  rate(\n    envoy_http_downstream_rq_tx_reset{\n      cluster=\"$cluster\",\nnamespace=~\"$namespace\",\njob=~\"$job\",\npod=~\"$pod\"\n\n,\nenvoy_http_conn_manager_prefix=\"$envoy_http_conn_manager_prefix\"\n\n    }[$__rate_interval]\n  )\n) by (envoy_http_conn_manager_prefix)\n",
                "legendFormat": "TX Reset"
             },
             {
@@ -758,7 +758,7 @@
                   "uid": "$datasource"
                },
                "exemplar": false,
-               "expr": "sum(\n  rate(\n    envoy_http_downstream_rq_timeout{\n      cluster=\"$cluster\",\nnamespace=~\"$namespace\",\njob=~\"$job\",\npod=~\"$pod\"\n\n,\nenvoy_http_conn_manager_prefix=\"$envoy_http_conn_manager_prefix\"\n\n    }[$__rate_interval]\n  )\n) by (job, envoy_http_conn_manager_prefix)\n",
+               "expr": "sum(\n  rate(\n    envoy_http_downstream_rq_timeout{\n      cluster=\"$cluster\",\nnamespace=~\"$namespace\",\njob=~\"$job\",\npod=~\"$pod\"\n\n,\nenvoy_http_conn_manager_prefix=\"$envoy_http_conn_manager_prefix\"\n\n    }[$__rate_interval]\n  )\n) by (envoy_http_conn_manager_prefix)\n",
                "legendFormat": "Timeout"
             }
          ],

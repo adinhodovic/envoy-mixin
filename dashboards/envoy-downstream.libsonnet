@@ -129,7 +129,7 @@ local grid = g.util.grid;
                 %(downstreamSingle)s
               }[$__rate_interval]
             )
-          ) by (job, envoy_http_conn_manager_prefix)
+          ) by (envoy_http_conn_manager_prefix)
         ||| % defaultFilters,
 
         downstreamCxRxBytesTotal: |||
@@ -139,7 +139,7 @@ local grid = g.util.grid;
                 %(downstreamSingle)s
               }[$__rate_interval]
             )
-          ) by (job, envoy_http_conn_manager_prefix)
+          ) by (envoy_http_conn_manager_prefix)
         ||| % defaultFilters,
 
         downstreamCxTxBytesTotal: |||
@@ -149,7 +149,7 @@ local grid = g.util.grid;
                 %(downstreamSingle)s
               }[$__rate_interval]
             )
-          ) by (job, envoy_http_conn_manager_prefix)
+          ) by (envoy_http_conn_manager_prefix)
         ||| % defaultFilters,
 
         downstreamCxIdleTimeout: |||
@@ -159,7 +159,7 @@ local grid = g.util.grid;
                 %(downstreamSingle)s
               }[$__rate_interval]
             )
-          ) by (job, envoy_http_conn_manager_prefix)
+          ) by (envoy_http_conn_manager_prefix)
         ||| % defaultFilters,
 
         downstreamRqRxReset: |||
@@ -169,7 +169,7 @@ local grid = g.util.grid;
                 %(downstreamSingle)s
               }[$__rate_interval]
             )
-          ) by (job, envoy_http_conn_manager_prefix)
+          ) by (envoy_http_conn_manager_prefix)
         ||| % defaultFilters,
 
         downstreamRqTxReset: |||
@@ -179,7 +179,7 @@ local grid = g.util.grid;
                 %(downstreamSingle)s
               }[$__rate_interval]
             )
-          ) by (job, envoy_http_conn_manager_prefix)
+          ) by (envoy_http_conn_manager_prefix)
         ||| % defaultFilters,
 
         downstreamRqTimeout: |||
@@ -189,7 +189,7 @@ local grid = g.util.grid;
                 %(downstreamSingle)s
               }[$__rate_interval]
             )
-          ) by (job, envoy_http_conn_manager_prefix)
+          ) by (envoy_http_conn_manager_prefix)
         ||| % defaultFilters,
 
         downstreamRateByPod: |||
@@ -209,6 +209,7 @@ local grid = g.util.grid;
             }
           ) by (pod, envoy_http_conn_manager_prefix)
         ||| % defaultFilters,
+
       };
 
       local panels = {
