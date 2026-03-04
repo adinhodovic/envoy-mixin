@@ -1483,6 +1483,161 @@
             "y": 69
          },
          "id": 24,
+         "title": "HTTP/2",
+         "type": "row"
+      },
+      {
+         "datasource": {
+            "type": "prometheus",
+            "uid": "$datasource"
+         },
+         "description": "Rate of connections terminated due to outbound HTTP/2 frame flood protection. Outbound Flood = total outbound frame queue (DATA, HEADERS, etc.) exceeded max_outbound_frames. Outbound Control Flood = control frame queue (PING, SETTINGS, RST_STREAM) exceeded max_outbound_control_frames. Non-zero values indicate slow or unresponsive clients unable to consume frames fast enough, or misconfigured flood limits.",
+         "fieldConfig": {
+            "defaults": {
+               "custom": {
+                  "axisSoftMin": 0,
+                  "fillOpacity": 100,
+                  "lineWidth": 1,
+                  "stacking": {
+                     "mode": "normal"
+                  }
+               },
+               "unit": "reqps"
+            }
+         },
+         "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 0,
+            "y": 70
+         },
+         "id": 25,
+         "options": {
+            "legend": {
+               "calcs": [
+                  "mean",
+                  "max"
+               ],
+               "displayMode": "table",
+               "placement": "right",
+               "showLegend": true,
+               "sortBy": "mean",
+               "sortDesc": true
+            },
+            "tooltip": {
+               "mode": "multi",
+               "sort": "desc"
+            }
+         },
+         "pluginVersion": "v11.4.0",
+         "targets": [
+            {
+               "datasource": {
+                  "type": "prometheus",
+                  "uid": "$datasource"
+               },
+               "exemplar": false,
+               "expr": "sum(\n  rate(\n    envoy_http2_outbound_flood{\n      cluster=\"$cluster\",\nnamespace=~\"$namespace\",\njob=~\"$job\",\npod=~\"$pod\"\n\n\n    }[$__rate_interval]\n  )\n)\n",
+               "legendFormat": "Outbound Flood"
+            },
+            {
+               "datasource": {
+                  "type": "prometheus",
+                  "uid": "$datasource"
+               },
+               "exemplar": false,
+               "expr": "sum(\n  rate(\n    envoy_http2_outbound_control_flood{\n      cluster=\"$cluster\",\nnamespace=~\"$namespace\",\njob=~\"$job\",\npod=~\"$pod\"\n\n\n    }[$__rate_interval]\n  )\n)\n",
+               "legendFormat": "Outbound Control Flood"
+            }
+         ],
+         "title": "HTTP/2 Outbound Flood",
+         "type": "timeseries"
+      },
+      {
+         "datasource": {
+            "type": "prometheus",
+            "uid": "$datasource"
+         },
+         "description": "Rate of connections terminated due to inbound HTTP/2 frame flood protection. Empty Frames = consecutive frames with empty payload exceeded max_consecutive_inbound_frames_with_empty_payload. Priority Frames = PRIORITY frame flood exceeded max_inbound_priority_frames_per_stream. Window Update Frames = WINDOW_UPDATE flood exceeded max_inbound_window_update_frames_per_data_frame_sent. Any non-zero rate signals a potential HTTP/2 denial-of-service attack or severely misbehaving client.",
+         "fieldConfig": {
+            "defaults": {
+               "custom": {
+                  "axisSoftMin": 0,
+                  "fillOpacity": 100,
+                  "lineWidth": 1,
+                  "stacking": {
+                     "mode": "normal"
+                  }
+               },
+               "unit": "reqps"
+            }
+         },
+         "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 12,
+            "y": 70
+         },
+         "id": 26,
+         "options": {
+            "legend": {
+               "calcs": [
+                  "mean",
+                  "max"
+               ],
+               "displayMode": "table",
+               "placement": "right",
+               "showLegend": true,
+               "sortBy": "mean",
+               "sortDesc": true
+            },
+            "tooltip": {
+               "mode": "multi",
+               "sort": "desc"
+            }
+         },
+         "pluginVersion": "v11.4.0",
+         "targets": [
+            {
+               "datasource": {
+                  "type": "prometheus",
+                  "uid": "$datasource"
+               },
+               "exemplar": false,
+               "expr": "sum(\n  rate(\n    envoy_http2_inbound_empty_frames_flood{\n      cluster=\"$cluster\",\nnamespace=~\"$namespace\",\njob=~\"$job\",\npod=~\"$pod\"\n\n\n    }[$__rate_interval]\n  )\n)\n",
+               "legendFormat": "Empty Frames"
+            },
+            {
+               "datasource": {
+                  "type": "prometheus",
+                  "uid": "$datasource"
+               },
+               "exemplar": false,
+               "expr": "sum(\n  rate(\n    envoy_http2_inbound_priority_frames_flood{\n      cluster=\"$cluster\",\nnamespace=~\"$namespace\",\njob=~\"$job\",\npod=~\"$pod\"\n\n\n    }[$__rate_interval]\n  )\n)\n",
+               "legendFormat": "Priority Frames"
+            },
+            {
+               "datasource": {
+                  "type": "prometheus",
+                  "uid": "$datasource"
+               },
+               "exemplar": false,
+               "expr": "sum(\n  rate(\n    envoy_http2_inbound_window_update_frames_flood{\n      cluster=\"$cluster\",\nnamespace=~\"$namespace\",\njob=~\"$job\",\npod=~\"$pod\"\n\n\n    }[$__rate_interval]\n  )\n)\n",
+               "legendFormat": "Window Update Frames"
+            }
+         ],
+         "title": "HTTP/2 Inbound Flood",
+         "type": "timeseries"
+      },
+      {
+         "collapsed": false,
+         "gridPos": {
+            "h": 1,
+            "w": 24,
+            "x": 0,
+            "y": 78
+         },
+         "id": 27,
          "title": "SSL",
          "type": "row"
       },
@@ -1504,9 +1659,9 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 70
+            "y": 79
          },
-         "id": 25,
+         "id": 28,
          "options": {
             "legend": {
                "calcs": [

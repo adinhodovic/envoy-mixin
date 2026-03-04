@@ -137,13 +137,13 @@ local grid = g.util.grid;
             envoy_cluster_membership_healthy{
               %(upstreamSingle)s
             }
-          ) by (job, envoy_cluster_name)
+          ) by (envoy_cluster_name)
           /
           sum(
             envoy_cluster_membership_total{
               %(upstreamSingle)s
             }
-          ) by (job, envoy_cluster_name)
+          ) by (envoy_cluster_name)
           * 100
         ||| % defaultFilters,
 
@@ -162,7 +162,7 @@ local grid = g.util.grid;
                 %(upstreamSingle)s
               }[$__rate_interval]
             )
-          ) by (job, envoy_cluster_name)
+          ) by (envoy_cluster_name)
         ||| % defaultFilters,
 
         upstreamDestroyCxByEnvoyClusterName: |||
@@ -172,7 +172,7 @@ local grid = g.util.grid;
                 %(upstreamSingle)s
               }[$__rate_interval]
             )
-          ) by (job, envoy_cluster_name)
+          ) by (envoy_cluster_name)
         ||| % defaultFilters,
 
         upstreamConnectFailCxByEnvoyClusterName: |||
@@ -182,7 +182,7 @@ local grid = g.util.grid;
                 %(upstreamSingle)s
               }[$__rate_interval]
             )
-          ) by (job, envoy_cluster_name)
+          ) by (envoy_cluster_name)
         ||| % defaultFilters,
 
         upstreamCircuitBreakersOpenCxByEnvoyClusterName: |||
@@ -190,7 +190,7 @@ local grid = g.util.grid;
             envoy_cluster_circuit_breakers_default_cx_open{
               %(upstreamSingle)s
             }
-          ) by (job, envoy_cluster_name)
+          ) by (envoy_cluster_name)
         ||| % defaultFilters,
 
         upstreamCircuitBreakersOpenPoolCxByEnvoyClusterName: |||
@@ -198,7 +198,7 @@ local grid = g.util.grid;
             envoy_cluster_circuit_breakers_default_cx_pool_open{
               %(upstreamSingle)s
             }
-          ) by (job, envoy_cluster_name)
+          ) by (envoy_cluster_name)
         ||| % defaultFilters,
 
         upstreamCircuitBreakersOpenRqByEnvoyClusterName: |||
@@ -206,7 +206,7 @@ local grid = g.util.grid;
             envoy_cluster_circuit_breakers_default_rq_open{
               %(upstreamSingle)s
             }
-          ) by (job, envoy_cluster_name)
+          ) by (envoy_cluster_name)
         ||| % defaultFilters,
 
         upstreamTimeOutRateByEnvoyClusterName: |||
@@ -216,7 +216,7 @@ local grid = g.util.grid;
                 %(upstreamSingle)s
               }[$__rate_interval]
             )
-          ) by (job, envoy_cluster_name)
+          ) by (envoy_cluster_name)
         ||| % defaultFilters,
 
         upstreamRetryRateByEnvoyClusterName: |||
@@ -226,7 +226,7 @@ local grid = g.util.grid;
                 %(upstreamSingle)s
               }[$__rate_interval]
             )
-          ) by (job, envoy_cluster_name)
+          ) by (envoy_cluster_name)
         ||| % defaultFilters,
 
         upstreamRetryOverflowRateByEnvoyClusterName: |||
@@ -236,7 +236,7 @@ local grid = g.util.grid;
                 %(upstreamSingle)s
               }[$__rate_interval]
             )
-          ) by (job, envoy_cluster_name)
+          ) by (envoy_cluster_name)
         ||| % defaultFilters,
 
         upstreamRateByPod: |||

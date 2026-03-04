@@ -422,6 +422,57 @@ local tbOverride = tbStandardOptions.override;
           %(rpsTop40k)s
         ||| % (defaultFilters + downstreamRpsTop40k),
 
+        // HTTP/2
+        http2OutboundFlood: |||
+          sum(
+            rate(
+              envoy_http2_outbound_flood{
+                %(default)s
+              }[$__rate_interval]
+            )
+          )
+        ||| % defaultFilters,
+
+        http2OutboundControlFlood: |||
+          sum(
+            rate(
+              envoy_http2_outbound_control_flood{
+                %(default)s
+              }[$__rate_interval]
+            )
+          )
+        ||| % defaultFilters,
+
+        http2InboundEmptyFramesFlood: |||
+          sum(
+            rate(
+              envoy_http2_inbound_empty_frames_flood{
+                %(default)s
+              }[$__rate_interval]
+            )
+          )
+        ||| % defaultFilters,
+
+        http2InboundPriorityFramesFlood: |||
+          sum(
+            rate(
+              envoy_http2_inbound_priority_frames_flood{
+                %(default)s
+              }[$__rate_interval]
+            )
+          )
+        ||| % defaultFilters,
+
+        http2InboundWindowUpdateFramesFlood: |||
+          sum(
+            rate(
+              envoy_http2_inbound_window_update_frames_flood{
+                %(default)s
+              }[$__rate_interval]
+            )
+          )
+        ||| % defaultFilters,
+
         // SSL
         sslExpirationsByEnvoyTlsCertificate: |||
           min(
@@ -895,6 +946,46 @@ local tbOverride = tbStandardOptions.override;
             tbPanelOptions.link.withTargetBlank(true),
           ]),
 
+        http2OutboundFloodTimeSeries:
+          mixinUtils.dashboards.timeSeriesPanel(
+            'HTTP/2 Outbound Flood',
+            'reqps',
+            [
+              {
+                expr: queries.http2OutboundFlood,
+                legend: 'Outbound Flood',
+              },
+              {
+                expr: queries.http2OutboundControlFlood,
+                legend: 'Outbound Control Flood',
+              },
+            ],
+            description='Rate of connections terminated due to outbound HTTP/2 frame flood protection. Outbound Flood = total outbound frame queue (DATA, HEADERS, etc.) exceeded max_outbound_frames. Outbound Control Flood = control frame queue (PING, SETTINGS, RST_STREAM) exceeded max_outbound_control_frames. Non-zero values indicate slow or unresponsive clients unable to consume frames fast enough, or misconfigured flood limits.',
+            stack='normal',
+          ),
+
+        http2InboundFloodTimeSeries:
+          mixinUtils.dashboards.timeSeriesPanel(
+            'HTTP/2 Inbound Flood',
+            'reqps',
+            [
+              {
+                expr: queries.http2InboundEmptyFramesFlood,
+                legend: 'Empty Frames',
+              },
+              {
+                expr: queries.http2InboundPriorityFramesFlood,
+                legend: 'Priority Frames',
+              },
+              {
+                expr: queries.http2InboundWindowUpdateFramesFlood,
+                legend: 'Window Update Frames',
+              },
+            ],
+            description='Rate of connections terminated due to inbound HTTP/2 frame flood protection. Empty Frames = consecutive frames with empty payload exceeded max_consecutive_inbound_frames_with_empty_payload. Priority Frames = PRIORITY frame flood exceeded max_inbound_priority_frames_per_stream. Window Update Frames = WINDOW_UPDATE flood exceeded max_inbound_window_update_frames_per_data_frame_sent. Any non-zero rate signals a potential HTTP/2 denial-of-service attack or severely misbehaving client.',
+            stack='normal',
+          ),
+
         sslExpirationsByEnvoyTlsCertificateTimeSeries:
           mixinUtils.dashboards.timeSeriesPanel(
             'SSL Expirations by Envoy TLS Certificate',
@@ -991,9 +1082,25 @@ local tbOverride = tbStandardOptions.override;
           startY=57
         ) +
         [
-          row.new('SSL') +
+          row.new('HTTP/2') +
           row.gridPos.withX(0) +
           row.gridPos.withY(69) +
+          row.gridPos.withW(24) +
+          row.gridPos.withH(1),
+        ] +
+        grid.wrapPanels(
+          [
+            panels.http2OutboundFloodTimeSeries,
+            panels.http2InboundFloodTimeSeries,
+          ],
+          panelWidth=12,
+          panelHeight=8,
+          startY=70
+        ) +
+        [
+          row.new('SSL') +
+          row.gridPos.withX(0) +
+          row.gridPos.withY(78) +
           row.gridPos.withW(24) +
           row.gridPos.withH(1),
         ] +
@@ -1003,7 +1110,7 @@ local tbOverride = tbStandardOptions.override;
           ],
           panelWidth=24,
           panelHeight=8,
-          startY=70
+          startY=79
         );
 
       mixinUtils.dashboards.bypassDashboardValidation +
